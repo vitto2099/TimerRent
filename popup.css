@@ -1,0 +1,253 @@
+:root {
+  --bs-body-bg: #000000;
+  --bs-body-color: #F1F5F9;
+  --font-sans: 'Inter', -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Purple AMOLED Theme */
+  --bs-primary: #8B5CF6;
+  --bs-primary-rgb: 139, 92, 246;
+  --bs-primary-hover: #7C3AED;
+}
+
+body {
+  font-family: var(--font-sans);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: var(--bs-body-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Nav Bar AMOLED tweaks */
+.nav-bar {
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid #1a1a1a;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  color: #6c757d;
+  font-size: 20px;
+  padding: 8px 12px;
+  border-radius: 50px;
+  transition: all 0.2s ease;
+}
+.nav-btn:hover { color: #fff; background: rgba(255,255,255,0.05); }
+.nav-btn.active { color: var(--bs-primary); background: rgba(139, 92, 246, 0.15); }
+
+/* Views */
+.view {
+  display: none;
+  animation: fadeIn 0.2s ease-out;
+  flex-direction: column;
+  height: 100%;
+}
+.view.active { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Cards */
+.card {
+  background-color: #111111 !important;
+  border-color: #222222 !important;
+}
+
+.bg-black {
+  background-color: #000000 !important;
+}
+
+/* Buttons overriding Bootstrap's primary */
+.btn-primary {
+  background-color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  color: #fff !important;
+}
+.btn-primary:hover {
+  background-color: var(--bs-primary-hover) !important;
+  border-color: var(--bs-primary-hover) !important;
+}
+.btn-outline-primary {
+  color: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+}
+.btn-outline-primary:hover {
+  background-color: var(--bs-primary) !important;
+  color: #fff !important;
+}
+.text-primary {
+  color: var(--bs-primary) !important;
+}
+.bg-primary {
+  background-color: var(--bs-primary) !important;
+}
+.border-primary {
+  border-color: var(--bs-primary) !important;
+}
+
+.premium-card {
+  background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%) !important;
+}
+
+/* Option Chips (Wizard) */
+.option-chip {
+  background: #111;
+  border: 1px solid #222;
+  color: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.option-chip:hover {
+  border-color: #555;
+  background: #1a1a1a;
+}
+.option-chip.selected {
+  border-color: var(--bs-primary);
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--bs-primary);
+  box-shadow: 0 0 0 1px var(--bs-primary);
+}
+
+/* Inputs */
+.form-control, .form-select {
+  font-size: 14px;
+}
+.form-control:focus, .form-select:focus {
+  background-color: #000;
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.25);
+  color: #fff;
+}
+
+/* Dynamic list remove buttons */
+.btn-remove {
+  background: transparent;
+  border: none;
+  color: #6c757d;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: 0.2s;
+}
+.btn-remove:hover { color: #dc3545; background: rgba(220, 53, 69, 0.1); }
+
+/* Timer dot */
+.timer-display-container { position: relative; }
+.status-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  position: absolute; top: 50px; left: 20px;
+  transition: 0.3s;
+}
+.status-dot.running { background: var(--bs-primary); box-shadow: 0 0 10px var(--bs-primary); animation: pulse 2s infinite; }
+.status-dot.paused { background: #ffc107; }
+.status-dot.stopped { background: #6c757d; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Login Overlay */
+#login-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background-color: #000;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* Toast customization */
+.toast-body { font-size: 14px; }
+
+/* Accordion AMOLED overrides */
+.accordion-item {
+  background-color: transparent;
+  border: 1px solid #222;
+  border-radius: 12px !important;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.accordion-button {
+  background-color: #111;
+  color: #fff;
+  box-shadow: none !important;
+}
+.accordion-button:not(.collapsed) {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+.accordion-button::after {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+.accordion-body {
+  background-color: #000;
+  border-top: 1px solid #222;
+}
+
+/* Obsidian-style Tasks */
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.task-item:hover {
+  background-color: #111;
+  border-color: #222;
+}
+.task-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #555;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: 0.2s;
+}
+.task-item.done .task-checkbox {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+  color: #fff;
+}
+.task-text {
+  flex: 1;
+  color: #fff;
+  transition: 0.2s;
+  font-size: 14px;
+}
+.task-item.done .task-text {
+  color: #6c757d;
+  text-decoration: line-through;
+}

@@ -1,0 +1,33 @@
+{
+  "name": "timerrent",
+  "version": "1.0.0",
+  "description": "Sistema especialista de precificação + cronômetro",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder -w"
+  },
+  "build": {
+    "appId": "com.vitor.timerrent",
+    "productName": "TimerRent",
+    "win": {
+      "icon": "icons/icon.png",
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^42.5.0",
+    "electron-builder": "^24.13.3",
+    "electron-reload": "^2.0.0-alpha.1",
+    "png-to-ico": "^3.0.1"
+  },
+  "dependencies": {
+    "firebase": "^12.15.0"
+  }
+}

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <title>TimerRent</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  
+  <!-- LOGIN OVERLAY -->
+  <div id="login-overlay">
+    <div class="text-center mb-5">
+      <i class="bi bi-cloud-check display-1 text-primary mb-3 d-block"></i>
+      <h3 class="text-white fw-bold">TimerRent</h3>
+      <p id="login-msg" class="text-secondary small">Faça login para sincronizar na nuvem</p>
+    </div>
+    <div class="card bg-dark border-secondary rounded-4 p-4 shadow" style="width: 100%; max-width: 320px;">
+      <button id="btn-login-google" class="btn btn-outline-light w-100 rounded-pill py-2 fw-semibold mb-3">
+        <i class="bi bi-google me-2"></i> Logar com Google
+      </button>
+      <div class="text-center mb-3">
+        <span class="text-secondary small">ou</span>
+      </div>
+      <button id="btn-login-guest" class="btn btn-dark border-secondary w-100 rounded-pill py-2 fw-semibold text-secondary">
+        Usar sem Login (Local)
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN APP (Hidden until login) -->
+  <div id="app-container" style="display: none; height: 100%; flex-direction: column;">
+    <div class="nav-bar d-flex justify-content-between align-items-center px-4 py-3">
+      <div class="logo d-flex align-items-center gap-2 dropdown">
+        <i class="bi bi-stopwatch logo-icon text-primary"></i>
+        <button class="btn btn-link text-decoration-none p-0 text-start d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false" style="color: inherit;">
+          <span id="global-project-name"><span class="logo-t">Timer</span><span class="logo-r">Rent</span></span>
+          <i class="bi bi-chevron-down small text-secondary"></i>
+        </button>
+        <ul id="global-project-list" class="dropdown-menu dropdown-menu-dark bg-black border-secondary shadow-lg">
+          <li><span class="dropdown-item-text text-secondary small">Nenhum projeto ativo</span></li>
+        </ul>
+      </div>
+      <div class="nav-icons d-flex gap-1">
+        <button id="nav-wizard" class="nav-btn" title="Novo Orçamento"><i class="bi bi-plus-square"></i></button>
+        <button id="nav-projects" class="nav-btn active" title="Projetos"><i class="bi bi-kanban"></i></button>
+        <button id="nav-timer" class="nav-btn" title="Cronômetro"><i class="bi bi-clock"></i></button>
+        <button id="nav-rules" class="nav-btn" title="Regras"><i class="bi bi-sliders"></i></button>
+        <button id="nav-config" class="nav-btn" title="Configurações"><i class="bi bi-gear"></i></button>
+      </div>
+    </div>
+
+    <main class="container-fluid px-4 px-md-5 py-4">
+      <!-- VIEW: WIZARD -->
+      <section id="view-wizard" class="view">
+        <div class="wizard-header mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span id="wizard-step-label" class="step-label text-secondary fw-medium small">Carregando...</span>
+            <button id="btn-wizard-back" class="btn btn-sm btn-link text-secondary text-decoration-none" style="display:none;"><i class="bi bi-arrow-left"></i> Voltar</button>
+          </div>
+          <div class="progress" style="height: 4px;">
+            <div id="wizard-progress" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="wizard-container">
+          <h3 id="wizard-question" class="mb-4 text-white">Carregando...</h3>
+          <div id="wizard-options" class="options-container d-grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+            <!-- Chips inseridos via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: RESULTADO -->
+      <section id="view-resultado" class="view">
+        <h4 class="mb-4 text-white">Orçamento Sugerido</h4>
+        
+        <div class="result-summary mb-4 d-flex justify-content-center">
+          <div class="result-hours card bg-dark border-secondary text-center p-3 rounded-4 shadow-sm">
+            <span class="text-secondary small fw-semibold text-uppercase">Tempo Estimado</span>
+            <span id="result-hours-value" class="fs-2 fw-bold text-primary font-monospace">0h</span>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-12 col-md-4">
+            <div class="card bg-dark border-secondary h-100 p-3 rounded-4">
+              <span class="text-secondary small fw-semibold">Mínimo (Custo)</span>
+              <span id="price-min" class="fs-5 font-monospace text-white">R$ 0,00</span>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card bg-primary bg-opacity-10 border-primary h-100 p-3 rounded-4 shadow">
+              <span class="text-primary small fw-semibold"><i class="bi bi-star-fill me-1"></i> Sugerido</span>
+              <span id="price-suggested" class="fs-4 fw-bold font-monospace text-primary">R$ 0,00</span>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="card premium-card h-100 p-3 rounded-4 border-0 shadow">
+              <span class="text-white small fw-semibold">Valor Premium</span>
+              <span id="price-premium" class="fs-5 font-monospace text-white fw-bold">R$ 0,00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-dark border-secondary rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h6 class="text-white mb-2"><i class="bi bi-plus-circle me-2"></i>Custos Extras</h6>
+            <div id="extras-list" class="d-flex flex-column gap-2 mb-3"></div>
+            <button id="btn-add-extra" class="btn btn-outline-secondary w-100 rounded-pill"><i class="bi bi-plus"></i> Adicionar Custo Extra</button>
+          </div>
+        </div>
+
+        <div class="card bg-black border-primary rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h6 class="text-primary mb-3">Salvar como Projeto</h6>
+            <input type="text" id="new-project-name" class="form-control bg-dark border-secondary text-white mb-2" placeholder="Nome do Projeto (Ex: Loja Virtual Cliente X)">
+          </div>
+        </div>
+
+        <div class="d-flex gap-3 mt-auto">
+          <button id="btn-redo" class="btn btn-dark border-secondary flex-fill rounded-pill py-2">Refazer</button>
+          <button id="btn-save-project" class="btn btn-primary flex-fill rounded-pill py-2 fw-semibold">Salvar Projeto <i class="bi bi-check2"></i></button>
+        </div>
+      </section>
+
+      <!-- VIEW: PROJECTS -->
+      <section id="view-projects" class="view active">
+        <h4 class="mb-4 text-white">Meus Projetos</h4>
+        <div id="projects-list" class="row g-3 overflow-auto pb-4">
+          <!-- Projetos inseridos via JS -->
+        </div>
+        <div class="actions mt-auto d-flex gap-3">
+          <button id="btn-go-wizard" class="btn btn-outline-primary flex-fill rounded-pill py-2"><i class="bi bi-plus-lg"></i> Novo Projeto</button>
+        </div>
+      </section>
+
+      <!-- VIEW: TIMER -->
+      <section id="view-timer" class="view text-center">
+        <div class="timer-display-container py-5 position-relative">
+          <div id="timer-status-dot" class="status-dot stopped"></div>
+          <div id="timer-display" class="display-1 fw-bold font-monospace text-white mb-2">00:00:00</div>
+          <div id="timer-value" class="fs-3 fw-medium font-monospace text-primary">R$ 0,00</div>
+        </div>
+        
+        <div class="mb-4">
+          <h5 id="active-project-name" class="text-white mb-1">Nenhum projeto selecionado</h5>
+          <span id="active-project-meta" class="text-secondary small font-monospace">Selecione um projeto na aba Projetos</span>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3 mb-4">
+          <button id="btn-timer-start" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold disabled"><i class="bi bi-play-fill"></i> Iniciar</button>
+          <button id="btn-timer-pause" class="btn btn-warning rounded-pill px-4 py-2 fw-semibold text-dark" style="display: none;"><i class="bi bi-pause-fill"></i> Pausar</button>
+          <button id="btn-timer-reset" class="btn btn-dark border-secondary rounded-pill px-4 py-2 disabled"><i class="bi bi-stop-fill"></i> Encerrar Sessão</button>
+        </div>
+
+        <div class="card bg-dark border-secondary rounded-4 text-start p-3 mb-4">
+          <div class="d-flex justify-content-between small text-secondary mb-2">
+            <span>Progresso da Meta</span>
+            <span id="target-value">N/A</span>
+          </div>
+          <div class="progress" style="height: 8px;">
+            <div id="timer-progress" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+          </div>
+        </div>
+
+        <!-- TASK BLOCK -->
+        <div id="task-block" class="card bg-black border-secondary rounded-4 text-start p-3 d-none flex-grow-1 overflow-auto">
+          <h6 class="text-white mb-3"><i class="bi bi-check2-square text-primary me-2"></i>Tarefas (To-Do)</h6>
+          <div class="d-flex gap-2 mb-3">
+            <input type="text" id="new-task-input" class="form-control bg-dark border-secondary text-white rounded-pill form-control-sm" placeholder="Adicionar nova tarefa...">
+            <button id="btn-add-task" class="btn btn-primary btn-sm rounded-pill px-3"><i class="bi bi-plus"></i></button>
+          </div>
+          <div id="tasks-list" class="d-flex flex-column gap-1">
+            <!-- Tasks inseridas via JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW: RULES BUILDER -->
+      <section id="view-rules" class="view">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="text-white m-0">Regras de Cálculo</h4>
+          <button id="btn-restore-rules" class="btn btn-sm btn-outline-secondary rounded-pill" title="Restaurar Padrão"><i class="bi bi-arrow-counterclockwise"></i></button>
+        </div>
+        
+        <div id="rules-list" class="accordion accordion-flush bg-transparent mb-4">
+          <!-- Regras dinâmicas -->
+        </div>
+        
+        <button id="btn-add-rule" class="btn btn-outline-primary w-100 rounded-pill mb-4"><i class="bi bi-plus-lg"></i> Nova Pergunta</button>
+        
+        <div class="actions mt-auto">
+          <button id="btn-save-rules" class="btn btn-primary w-100 rounded-pill py-2 fw-semibold"><i class="bi bi-save"></i> Salvar Regras</button>
+        </div>
+      </section>
+
+      <!-- VIEW: CONFIG -->
+      <section id="view-config" class="view">
+        <h4 class="mb-4 text-white">Configurações</h4>
+        
+        <div class="card bg-dark border-secondary rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h6 class="text-white mb-3">Conta / Armazenamento</h6>
+            <div class="mb-3">
+              <label class="form-label text-secondary small">Status do Login</label>
+              <div class="d-flex justify-content-between align-items-center">
+                <span id="config-auth-status" class="text-white font-monospace">Local (Offline)</span>
+                <button id="btn-logout" class="btn btn-sm btn-outline-danger rounded-pill px-3">Sair</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-dark border-secondary rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h6 class="text-white mb-3">Perfil Profissional</h6>
+            <div class="mb-3">
+              <label class="form-label text-secondary small">Seu Nome / Empresa</label>
+              <input type="text" id="config-name" class="form-control bg-black border-secondary text-white" />
+            </div>
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label text-secondary small">Moeda</label>
+                <select id="config-currency" class="form-select bg-black border-secondary text-white">
+                  <option value="R$">R$ (BRL)</option>
+                  <option value="$">$ (USD)</option>
+                  <option value="€">€ (EUR)</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label text-secondary small">Horas Mês</label>
+                <input type="number" id="config-hours-month" class="form-control bg-black border-secondary text-white" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-dark border-secondary rounded-4 mb-4">
+          <div class="card-body p-4">
+            <h6 class="text-white mb-2">Custos Mensais Fixos</h6>
+            <div id="expenses-container" class="d-flex flex-column gap-2 mb-3 mt-3"></div>
+            <button id="btn-add-expense" class="btn btn-outline-secondary w-100 rounded-pill mb-3"><i class="bi bi-plus"></i> Adicionar Custo</button>
+            
+            <label class="form-label text-secondary small">Margem de Lucro (%)</label>
+            <input type="number" id="config-profit" class="form-control bg-black border-secondary text-white" />
+          </div>
+        </div>
+
+        <div class="card bg-dark border-secondary rounded-4 mb-4">
+          <div class="card-body p-4 text-center">
+            <h6 class="text-white mb-3">Sua Taxa Horária</h6>
+            <div class="bg-black border border-primary rounded-4 p-3 mb-3">
+              <span class="d-block text-primary small text-uppercase fw-semibold mb-1">Valor Final</span>
+              <span id="calculated-rate-display" class="fs-2 font-monospace text-primary fw-bold">R$ 0,00</span>
+            </div>
+            <div class="text-start mb-3">
+              <label class="form-label text-secondary small">Travar valor manualmente:</label>
+              <input type="number" id="config-rate" class="form-control bg-black border-secondary text-white" />
+            </div>
+            <button id="btn-calc-rate" class="btn btn-outline-primary w-100 rounded-pill"><i class="bi bi-calculator"></i> Calcular Taxa pelos Custos</button>
+          </div>
+        </div>
+
+        <div class="actions mt-auto">
+          <button id="btn-save-config" class="btn btn-primary w-100 rounded-pill py-2 fw-semibold"><i class="bi bi-save"></i> Salvar Configurações</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast-container" class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 1100;"></div>
+
+  <!-- Bootstrap JS (bundle) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script src="firebase-config.js"></script>
+  <script src="storage.js"></script>
+  <script src="engine.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
