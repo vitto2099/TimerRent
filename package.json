@@ -11,7 +11,7 @@
     "appId": "com.vitor.timerrent",
     "productName": "TimerRent",
     "win": {
-      "icon": "icons/icon.png",
+      "icon": "icons/icon.ico",
       "target": "nsis"
     },
     "nsis": {
